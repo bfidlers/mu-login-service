@@ -74,7 +74,8 @@ post '/sessions/?' do
   ###
 
   session_id = generate_uuid()
-  insert_new_session_for_account(account[:uri].to_s, session_uri, session_id)
+  roles = ["test3", "test4"]
+  insert_new_session_for_account(account[:uri].to_s, session_uri, session_id, roles)
   update_modified(session_uri)
   status 201
   headers['mu-auth-allowed-groups'] = 'CLEAR'

@@ -36,13 +36,14 @@ module LoginService
       Mu::AuthSudo.update(query)
     end
 
-    def insert_new_session_for_account(account, session_uri, session_id)
+    def insert_new_session_for_account(account, session_uri, session_id, roles)
+      roles_string = roles.map{|r| r.sparql_escape}.join(", ")
       query = " PREFIX ext: <http://mu.semte.ch/vocabularies/ext/>" + "\n"
       query += " INSERT DATA {" + "\n"
       query += "   GRAPH <#{SESSIONS_GRAPH}> {" + "\n"
       query += "     <#{session_uri}> <#{MU_SESSION.account}> <#{account}> ;" + "\n"
       query += "                      <#{MU_CORE.uuid}> #{session_id.sparql_escape} ;" + "\n"
-      query += "                      ext:sessionRole \"test1\" , \"test2\" ." + "\n"
+      query += "                      ext:sessionRole #{roles_string} ." + "\n"
       query += "   }" + "\n"
       query += " }" + "\n"
       Mu::AuthSudo.update(query)
