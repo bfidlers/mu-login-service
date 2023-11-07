@@ -37,10 +37,12 @@ module LoginService
     end
 
     def insert_new_session_for_account(account, session_uri, session_id)
-      query = " INSERT DATA {" + "\n"
+      query = " PREFIX ext: <http://mu.semte.ch/vocabularies/ext/>" + "\n"
+      query += " INSERT DATA {" + "\n"
       query += "   GRAPH <#{SESSIONS_GRAPH}> {" + "\n"
       query += "     <#{session_uri}> <#{MU_SESSION.account}> <#{account}> ;" + "\n"
-      query += "                      <#{MU_CORE.uuid}> #{session_id.sparql_escape} ." + "\n"
+      query += "                      <#{MU_CORE.uuid}> #{session_id.sparql_escape} ;" + "\n"
+      query += "                      ext:sessionRole \"test1\" , \"test2\" ." + "\n"
       query += "   }" + "\n"
       query += " }" + "\n"
       Mu::AuthSudo.update(query)
@@ -66,6 +68,19 @@ module LoginService
       query += "          <#{MU_CORE.uuid}> ?id ." + "\n"
       query += "   }" + "\n"
       query += " }" + "\n"
+      Mu::AuthSudo.query(query)
+    end
+
+    def select_current_session_ext(account)
+      query =  " PREFIX ext: <http://mu.semte.ch/vocabularies/ext/>" + "\n"
+      query += " SELECT ?uri (GROUP_CONCAT(?role; SEPARATOR = ',') as ?roles)" + "\n"
+      query += " WHERE {" + "\n"
+      query += "   GRAPH <#{SESSIONS_GRAPH}> {" + "\n"
+      query += "     ?uri <#{MU_SESSION.account}> <#{account}> ;" + "\n"
+      query += "          <#{MU_CORE.uuid}> ?id ;" + "\n"
+      query += "          ext:sessionRole ?role ." + "\n"
+      query += "   }" + "\n"
+      query += " } GROUP BY ?uri" + "\n"
       Mu::AuthSudo.query(query)
     end
 
