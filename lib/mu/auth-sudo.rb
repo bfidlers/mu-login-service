@@ -24,12 +24,12 @@ module Mu
     end
 
     def self.query(query)
-      log.info "\nExecuting sudo query:\n #{query}"
+      log.info "Executing sudo query:\n #{query}"
       sparql_client.query query
     end
 
     def self.update(query)
-      log.info "\nExecuting sudo update:\n #{query}"
+      log.info "Executing sudo update:\n #{query}"
       sparql_client.update query
     end
   end
