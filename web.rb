@@ -11,6 +11,7 @@ end
 
 MU_ACCOUNT = RDF::Vocabulary.new(MU.to_uri.to_s + 'account/')
 MU_SESSION = RDF::Vocabulary.new(MU.to_uri.to_s + 'session/')
+MU_EXT = RDF::Vocabulary.new(MU.to_uri.to_s + 'ext/')
 
 
 ###
@@ -74,8 +75,11 @@ post '/sessions/?' do
   ###
 
   session_id = generate_uuid()
-  roles = ["test3", "test4"]
-  insert_new_session_for_account(account[:uri].to_s, session_uri, session_id, roles)
+
+  roles = select_roles(account[:uri].to_s)
+  parsed_roles = roles.first[:roles].to_s.split(',')
+
+  insert_new_session_for_account(account[:uri].to_s, session_uri, session_id, parsed_roles)
   update_modified(session_uri)
   status 201
   headers['mu-auth-allowed-groups'] = 'CLEAR'
@@ -86,6 +90,9 @@ post '/sessions/?' do
     data: {
       type: 'sessions',
       id: session_id,
+      attributes: {
+        roles: parsed_roles
+      },
       relationships: {
         account: {
           links: {

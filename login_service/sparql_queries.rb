@@ -20,6 +20,16 @@ module LoginService
       Mu::AuthSudo.query(query)
     end
 
+    def select_roles(account)
+      query = " SELECT (GROUP_CONCAT(?role; SEPARATOR = ',') as ?roles) WHERE {" + "\n"
+      query += "   GRAPH <#{USERS_GRAPH}> {" + "\n"
+      query += "     <#{account}> <#{MU_EXT.role}> ?uri ." + "\n"
+      query += "     ?uri <#{MU_EXT.name}> ?role ." + "\n"
+      query += "   }" + "\n"
+      query += " }" + "\n"
+      Mu::AuthSudo.query(query)
+    end
+
     def remove_old_sessions(session)
       query =  " DELETE {" + "\n"
       query += "   GRAPH <#{SESSIONS_GRAPH}> {" + "\n"
