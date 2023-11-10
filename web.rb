@@ -12,6 +12,7 @@ end
 MU_ACCOUNT = RDF::Vocabulary.new(MU.to_uri.to_s + 'account/')
 MU_SESSION = RDF::Vocabulary.new(MU.to_uri.to_s + 'session/')
 MU_EXT = RDF::Vocabulary.new(MU.to_uri.to_s + 'ext/')
+DCTERMS = RDF::Vocabulary.new("http://purl.org/dc/terms/")
 
 
 ###

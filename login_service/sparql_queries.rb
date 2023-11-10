@@ -34,13 +34,17 @@ module LoginService
       query =  " DELETE {" + "\n"
       query += "   GRAPH <#{SESSIONS_GRAPH}> {" + "\n"
       query += "     <#{session}> <#{MU_SESSION.account}> ?account ;" + "\n"
-      query += "                <#{MU_CORE.uuid}> ?id ." + "\n"
+      query += "                  <#{MU_CORE.uuid}> ?id ;" + "\n"
+      query += "                  <#{DCTERMS.modified}> ?modified ;" + "\n"
+      query += "                  <#{MU_EXT.sessionRole}> ?role ." + "\n"
       query += "   }" + "\n"
       query += " }" + "\n"
       query += " WHERE {" + "\n"
       query += "   GRAPH <#{SESSIONS_GRAPH}> {" + "\n"
       query += "     <#{session}> <#{MU_SESSION.account}> ?account ;" + "\n"
-      query += "                <#{MU_CORE.uuid}> ?id ." + "\n"
+      query += "                  <#{MU_CORE.uuid}> ?id ;" + "\n"
+      query += "                  <#{DCTERMS.modified}> ?modified ;" + "\n"
+      query += "                  <#{MU_EXT.sessionRole}> ?role ." + "\n"
       query += "   }" + "\n"
       query += " }" + "\n"
       Mu::AuthSudo.update(query)
@@ -53,7 +57,9 @@ module LoginService
       query += "   GRAPH <#{SESSIONS_GRAPH}> {" + "\n"
       query += "     <#{session_uri}> <#{MU_SESSION.account}> <#{account}> ;" + "\n"
       query += "                      <#{MU_CORE.uuid}> #{session_id.sparql_escape} ;" + "\n"
-      query += "                      ext:sessionRole #{roles_string} ." + "\n"
+      if roles_string.length > 0
+        query += "                      ext:sessionRole #{roles_string} ." + "\n"
+      end
       query += "   }" + "\n"
       query += " }" + "\n"
       Mu::AuthSudo.update(query)
