@@ -78,7 +78,7 @@ post '/sessions/?' do
   session_id = generate_uuid()
 
   roles = select_roles(account[:uri].to_s)
-  parsed_roles = roles.first[:roles].to_s.split(',')
+  parsed_roles = roles.empty? ? [] : roles.first[:roles].to_s.split(',')
 
   insert_new_session_for_account(account[:uri].to_s, session_uri, session_id, parsed_roles)
   update_modified(session_uri)
