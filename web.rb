@@ -177,6 +177,7 @@ get '/sessions/current/?' do
   rewrite_url = rewrite_url_header(request)
 
   result_session = select_current_session_ext(account[:account].to_s)
+  parsed_roles = result_session.empty? ? [] : result_session.first[:roles].to_s.split(',')
 
   status 200
  {
@@ -185,9 +186,9 @@ get '/sessions/current/?' do
     },
     data: {
       type: 'sessions',
-      id: result_session.first[:uri],
+      id: session_uri,
       attributes: {
-        roles: result_session.first[:roles].to_s.split(',')
+        roles: parsed_roles
       },
       relationships: {
         account: {
